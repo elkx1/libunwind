@@ -406,7 +406,7 @@ is_qnx_kercall(struct dwarf_cursor *c)
   unw_word_t proc_start_ip;
   unw_word_t proc_end_ip;
 
-  a = unw_get_accessors_int (c->as);
+  a = unw_get_accessors (c->as);
   if (c->as->big_endian || !a->get_proc_ip_range)
     {
       return false;
@@ -464,7 +464,7 @@ get_sve_vl_signal_loc (struct dwarf_cursor* dwarf, unw_word_t sc_addr)
 {
   uint32_t size;
   unw_addr_space_t as = dwarf->as;
-  unw_accessors_t *a = unw_get_accessors_int (as);
+  unw_accessors_t *a = unw_get_accessors (as);
   void *arg = dwarf->as_arg;
   unw_word_t res_addr = sc_addr + LINUX_SC_RESERVED_OFF;
 
