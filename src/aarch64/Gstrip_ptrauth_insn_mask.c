@@ -29,15 +29,15 @@ static unw_word_t aarch64_strip_pac_remote (unw_accessors_t *a, unw_addr_space_t
     {
       unw_word_t ip, insn_mask;
 
-      insn_mask = a->ptrauth_insn_mask(as, arg);
+      insn_mask = a->ptrauth_insn_mask (as, arg);
       ip = old_ip & (~insn_mask);
 
-      Debug(15, "stripping pac from address, before: %lx, after: %lx\n", old_ip, ip);
+      Debug (15, "stripping pac from address, before: %lx, after: %lx\n", old_ip, ip);
       return ip;
     }
   else
     {
-      Debug(15, "return address %lx might be signed, but no means to obtain mask\n", old_ip);
+      Debug (15, "return address %lx might be signed, but no means to obtain mask\n", old_ip);
       return old_ip;
     }
 }
@@ -63,19 +63,19 @@ HIDDEN unw_word_t tdep_strip_ptrauth_insn_mask (unw_cursor_t *cursor, unw_word_t
   unw_addr_space_t as = d->as;
   void *as_arg = d->as_arg;
   unw_accessors_t *a;
-  unw_word_t oldip = ip;
+  unw_word_t stripped;
 
   if (as != unw_local_addr_space)
     {
       a = unw_get_accessors_int (as);
-      ip = aarch64_strip_pac_remote(a, as, as_arg, ip);
+      stripped = aarch64_strip_pac_remote (a, as, as_arg, ip);
     }
   else
     {
-      ip = aarch64_strip_pac_local(ip);
+      stripped = aarch64_strip_pac_local (ip);
     }
 
-  Debug(16, "stripped PAC; oldip=0x%lx ip=0x%lx\n", oldip, ip);
+  Debug (16, "stripped PAC; oldip=0x%lx ip=0x%lx\n", ip, stripped);
 
-  return ip;
+  return stripped;
 }
