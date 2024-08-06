@@ -24,26 +24,13 @@
 
 #ifdef UNW_TARGET_AARCH64
 
-static uint64_t swap_64 (uint64_t v)
-{
-  return ((v >>  0) & 0xFFull) << 56ull
-       | ((v >>  8) & 0xFFull) << 48ull
-       | ((v >> 16) & 0xFFull) << 40ull
-       | ((v >> 24) & 0xFFull) << 32ull
-       | ((v >> 32) & 0xFFull) << 24ull
-       | ((v >> 40) & 0xFFull) << 16ull
-       | ((v >> 48) & 0xFFull) <<  8ull
-       | ((v >> 56) & 0xFFull) <<  0ull;
-}
-
-unw_word_t _UPT_ptrauth_insn_mask (unw_addr_space_t as, void *arg)
+unw_word_t _UPT_ptrauth_insn_mask (UNUSED unw_addr_space_t as, void *arg)
 {
   struct UPT_info *ui = arg;
   pid_t pid = ui->pid;
   int ret;
   struct iovec iovec;
   uint64_t regset[2] = {0, 0};
-  unw_word_t result = 0;
 
   iovec.iov_base = &regset;
   iovec.iov_len = sizeof (regset);
@@ -57,14 +44,7 @@ unw_word_t _UPT_ptrauth_insn_mask (unw_addr_space_t as, void *arg)
 
   // regset[0] => data_mask
   // regset[1] => insn_mask
-  result = regset[1];
-
-  if (as->big_endian != target_is_big_endian ())
-    {
-      result = swap_64 (result);
-    }
-
-  return result;
+  return regset[1];
 }
 
 #else
